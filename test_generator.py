@@ -1,13 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-SCRIPT DE TESTARE - Generator LR(1)
-Verifică că tabelele generate corespund cu cele din PDF
-"""
-
-
 def citeste_TA(fisier='TA.txt'):
-    """Citește tabela de acțiuni generată"""
     TA = {}
     with open(fisier, 'r') as f:
         for linie in f:
@@ -17,9 +8,7 @@ def citeste_TA(fisier='TA.txt'):
                 TA[(int(stare), simbol)] = actiune
     return TA
 
-
 def citeste_TS(fisier='TS.txt'):
-    """Citește tabela de salt generată"""
     TS = {}
     with open(fisier, 'r') as f:
         for linie in f:
@@ -29,9 +18,7 @@ def citeste_TS(fisier='TS.txt'):
                 TS[(int(stare), neterminal)] = int(stare_noua)
     return TS
 
-
 def verifica_TA_asteptata():
-    """Tabela TA așteptată din PDF (Laborator 6)"""
     TA_asteptata = {
         (0, 'a'): 'd5', (0, '('): 'd4',
         (1, '+'): 'd6', (1, '$'): 'acc',
@@ -50,7 +37,6 @@ def verifica_TA_asteptata():
 
 
 def verifica_TS_asteptata():
-    """Tabela TS așteptată din PDF (Laborator 6)"""
     TS_asteptata = {
         (0, 'E'): 1, (0, 'T'): 2, (0, 'F'): 3,
         (4, 'E'): 8, (4, 'T'): 2, (4, 'F'): 3,
@@ -59,9 +45,7 @@ def verifica_TS_asteptata():
     }
     return TS_asteptata
 
-
 def compara_tabele():
-    """Compară tabelele generate cu cele așteptate"""
     print("=" * 60)
     print("VERIFICARE TABELE GENERATE")
     print("=" * 60)
@@ -148,7 +132,6 @@ def compara_tabele():
         print(f"   Erori în TS: {erori_TS}")
         return False
 
-
 def test_parsare_sir():
     """Testează un șir simplu: a+a*a"""
     print("\n" + "=" * 60)
@@ -165,7 +148,6 @@ def test_parsare_sir():
     print("N. Stiva: 0E1 | Intrare: $ | Acțiune: acc (ACCEPTAT)")
 
     print("\n💡 Pentru test complet, rulează programul C++ cu TA.txt și TS.txt")
-
 
 if __name__ == "__main__":
     print("\n🔍 SCRIPT DE TESTARE - GENERATOR LR(1)\n")
