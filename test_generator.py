@@ -35,7 +35,6 @@ def verifica_TA_asteptata():
     }
     return TA_asteptata
 
-
 def verifica_TS_asteptata():
     TS_asteptata = {
         (0, 'E'): 1, (0, 'T'): 2, (0, 'F'): 3,
@@ -54,20 +53,20 @@ def compara_tabele():
         TA_generata = citeste_TA('TA.txt')
         TS_generata = citeste_TS('TS.txt')
     except FileNotFoundError as e:
-        print(f"\n❌ EROARE: {e}")
-        print("Rulează mai întâi 'python generator_lr1.py'")
+        print(f"\nEROARE: {e}")
+        print("Ruleaza mai intai 'python generator_lr1.py'")
         return False
 
     TA_asteptata = verifica_TA_asteptata()
     TS_asteptata = verifica_TS_asteptata()
 
     # Verificare TA
-    print("\n📊 VERIFICARE TABELA DE ACȚIUNI (TA)")
+    print("\nVERIFICARE TABELA DE ACTIUNI (TA)")
     print("-" * 60)
 
     erori_TA = 0
     for cheie, valoare_asteptata in TA_asteptata.items():
-        valoare_generata = TA_generata.get(cheie, 'LIPSĂ')
+        valoare_generata = TA_generata.get(cheie, 'LIPSA')
 
         if valoare_generata == valoare_asteptata:
             status = "✓"
@@ -79,20 +78,20 @@ def compara_tabele():
         print(f"{status} TA[{stare}, '{simbol}'] = {valoare_generata:5s} "
               f"(așteptat: {valoare_asteptata})")
 
-    # Intrări extra în TA generată
+    # Intrari extra in TA generata
     extra_TA = set(TA_generata.keys()) - set(TA_asteptata.keys())
     if extra_TA:
-        print(f"\n⚠️  Intrări EXTRA în TA generată: {len(extra_TA)}")
+        print(f"\n! Intrari EXTRA in TA generata: {len(extra_TA)}")
         for cheie in sorted(extra_TA):
             print(f"   TA[{cheie[0]}, '{cheie[1]}'] = {TA_generata[cheie]}")
 
     # Verificare TS
-    print("\n📊 VERIFICARE TABELA DE SALT (TS)")
+    print("\nVERIFICARE TABELA DE SALT (TS)")
     print("-" * 60)
 
     erori_TS = 0
     for cheie, valoare_asteptata in TS_asteptata.items():
-        valoare_generata = TS_generata.get(cheie, 'LIPSĂ')
+        valoare_generata = TS_generata.get(cheie, 'LIPSA')
 
         if valoare_generata == valoare_asteptata:
             status = "✓"
@@ -104,10 +103,10 @@ def compara_tabele():
         print(f"{status} TS[{stare}, '{neterminal}'] = {valoare_generata:3} "
               f"(așteptat: {valoare_asteptata})")
 
-    # Intrări extra în TS generată
+    # Intrari extra in TS generata
     extra_TS = set(TS_generata.keys()) - set(TS_asteptata.keys())
     if extra_TS:
-        print(f"\n⚠️  Intrări EXTRA în TS generată: {len(extra_TS)}")
+        print(f"\nIntrari EXTRA in TS generata: {len(extra_TS)}")
         for cheie in sorted(extra_TS):
             print(f"   TS[{cheie[0]}, '{cheie[1]}'] = {TS_generata[cheie]}")
 
@@ -117,19 +116,19 @@ def compara_tabele():
     print("=" * 60)
 
     if erori_TA == 0 and erori_TS == 0:
-        print("✅ TOATE TESTELE AU TRECUT!")
-        print(f"   TA: {len(TA_asteptata)} intrări corecte")
-        print(f"   TS: {len(TS_asteptata)} intrări corecte")
+        print("✓ TOATE TESTELE AU TRECUT!")
+        print(f"   TA: {len(TA_asteptata)} intrari corecte")
+        print(f"   TS: {len(TS_asteptata)} intrari corecte")
 
         if extra_TA or extra_TS:
-            print(f"\n⚠️  Notă: Există {len(extra_TA) + len(extra_TS)} "
-                  "intrări extra (posibil din stări redundante)")
+            print(f"\n!  Nota: Exista {len(extra_TA) + len(extra_TS)} "
+                  "intrari extra (posibil din stari redundante)")
 
         return True
     else:
-        print(f"❌ TESTELE AU EȘUAT!")
-        print(f"   Erori în TA: {erori_TA}")
-        print(f"   Erori în TS: {erori_TS}")
+        print(f"TESTELE AU EȘUAT!")
+        print(f"   Erori in TA: {erori_TA}")
+        print(f"   Erori in TS: {erori_TS}")
         return False
 
 def test_parsare_sir():

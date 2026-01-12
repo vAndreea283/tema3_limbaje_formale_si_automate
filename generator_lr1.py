@@ -1,6 +1,6 @@
-# ========================================
+# ====================
 # 1. CITIRE GRAMATICA
-# ========================================
+# ====================
 
 def citeste_gramatica(fisier='gramatica.txt'):
     with open(fisier, 'r', encoding='utf-8') as f:
@@ -20,9 +20,9 @@ def citeste_gramatica(fisier='gramatica.txt'):
 
     return neterminale, terminale, simbol_start, productii
 
-# ========================================
-# 2. CALCUL PRIM și URM
-# ========================================
+# ======================
+# 2. CALCUL PRIM si URM
+# ======================
 
 # Exemplu:
 # Productii:
@@ -42,13 +42,15 @@ def citeste_gramatica(fisier='gramatica.txt'):
 # PRIM[T] = {a, (}
 # PRIM[F] = {a, (}
 
-# Calculează ce terminale pot apărea la începutul derivărilor fiecărui simbol
+# Calculeaza ce terminale pot aparea la inceputul derivarilor fiecarui simbol
 def calculeaza_PRIM(neterminale, terminale, productii):
     PRIM = {}
 
+    # Terminalele au PRIM = ele insele
     for t in terminale:
         PRIM[t] = {t}
 
+    # Neterminalele incep gol
     for n in neterminale:
         PRIM[n] = set()
 
@@ -65,13 +67,14 @@ def calculeaza_PRIM(neterminale, terminale, productii):
 
     return PRIM
 
-# Calculează ce terminale pot urma după un neterminal într-o derivare
+# Calculeaza ce terminale pot urma dupa un neterminal intr-o derivare
 def calculeaza_URM(neterminale, simbol_start, productii, PRIM):
     URM = {}
 
     for n in neterminale:
         URM[n] = set()
 
+    # Simbolul de start poate fi urmat de $
     URM[simbol_start].add('$')
 
     modificat = True
@@ -97,9 +100,9 @@ def calculeaza_URM(neterminale, simbol_start, productii, PRIM):
 
     return URM
 
-# ========================================
-# 3. CONSTRUIRE COLECȚIE - ORDONARE SPECIFICĂ
-# ========================================
+# ===========================================
+# 3. CONSTRUIRE COLECȚIE - ORDONARE SPECIFICA
+# ===========================================
 
 def inchidere_LR0(I, neterminale, productii):
     I = set(I)
@@ -123,37 +126,37 @@ def inchidere_LR0(I, neterminale, productii):
 # def inchidere_LR0(I, neterminale, productii):
 #     I = set(I)  # Mulțimea de articole
 #
-#     while (mai sunt modificări):
-#         Pentru fiecare articol(A, beta, dot) în I:
-#             Dacă dot < len(beta):  # Punctul nu e la sfârșit
-#                 B = beta[dot]      # Simbolul după punct
+#     while (mai sunt modificari):
+#         Pentru fiecare articol(A, beta, dot) in I:
+#             Daca dot < len(beta):  # Punctul nu e la sfarsit
+#                 B = beta[dot]      # Simbolul dupa punct
 #
-#                 Dacă B este neterminal:
-#                     Pentru fiecare producție B -> gamma:
-#                         Adaugă(B, gamma, 0) în I
+#                 Daca B este neterminal:
+#                     Pentru fiecare productie B -> gamma:
+#                         Adauga(B, gamma, 0) în I
 #
 # Exemplu concret:
 # Intrare: {(E, 'E+T', 0)}
-#          Adică: E -> •E + T
+#          Adica: E -> •E + T
 #
-# Pas 1: Vedem că după • este E(neterminal)
-#        Adăugăm toate producțiile pentru E:
+# Pas 1: Vedem ca dupa • este E(neterminal)
+#        Adaugam toate productiile pentru E:
 #        - (E, 'E+T', 0)  → E -> •E + T
 #        - (E, 'T', 0)    → E -> •T
 #
-# Pas 2: Vedem că după • în E -> •T este T(neterminal)
-#        Adăugăm toate producțiile pentru T:
+# Pas 2: Vedem ca dupa • in E -> •T este T(neterminal)
+#        Adaugam toate productiile pentru T:
 #        - (T, 'T*F', 0)  → T -> •T * F
 #        - (T, 'F', 0)    → T -> •F
 #
-# Pas 3: Vedem că după • în T -> •F este F(neterminal)
-#        Adăugăm toate producțiile pentru F:
+# Pas 3: Vedem ca dupa • in T -> •F este F(neterminal)
+#        Adaugam toate productiile pentru F:
 #        - (F, '(E)', 0)  → F -> •(E)
 #        - (F, 'a', 0)    → F -> •a
 #
-# Nu mai sunt modificări → STOP
+# Nu mai sunt modificari → STOP
 #
-# Ieșire: {
+# Iesire: {
 #     E -> •E + T,
 #     E -> •T,
 #     T -> •T * F,
@@ -162,7 +165,7 @@ def inchidere_LR0(I, neterminale, productii):
 #     F -> •a
 # }
 
-# Calculează starea următoare după ce "consumăm" un simbol
+# Calculeaza starea urmatoare dupa ce "consumam" un simbol
 def goto_LR0(I, X, neterminale, productii):
     M = set()
 
@@ -180,8 +183,8 @@ def goto_LR0(I, X, neterminale, productii):
 #     M = set()
 #
 #     Pentru fiecare articol(A, beta, dot) în I:
-#         Dacă beta[dot] == X:  # Simbolul după punct este X
-#             Mută punctul peste X:
+#         Dacă beta[dot] == X:  # Simbolul dupa punct este X
+#             Muta punctul peste X:
 #             M.add((A, beta, dot + 1))
 #
 #     return inchidere_LR0(M)
@@ -197,27 +200,27 @@ def goto_LR0(I, X, neterminale, productii):
 # }
 #
 # GOTO(I0, 'a'):
-# Căutăm articole cu 'a' după punct:
+# Cautam articole cu 'a' dupa punct:
 #     F -> •a  → F -> a•
 #
-# Rezultat după închidere:
+# Rezultat dupa inchidere:
 #     {F -> a•}
 #
 # GOTO(I0, 'E'):
-# Căutăm articole cu 'E' după punct:
+# Cautam articole cu 'E' dupa punct:
 #     E -> •E + T  → E -> E•+T
 #
-# Rezultat după închidere:
+# Rezultat după inchidere:
 #     {E -> E•+T}
 
 def colectie_LR0_ordonata(neterminale, terminale, simbol_start, productii):
     I0 = inchidere_LR0({("S'", simbol_start, 0)}, neterminale, productii)
 
     C = [I0]
-    coada = [I0]  # BFS (Breadth-First Search) pentru ordonare consistentă
+    coada = [I0]  # BFS (Breadth-First Search) pentru ordonare consistenta
     vizitate = {I0}
 
-    # Ordinea simbolurilor: E, T, F, apoi terminale în ordinea: a, +, *, (, )
+    # Ordinea simbolurilor: E, T, F, apoi terminale in ordinea: a, +, *, (, )
     ordine_simboluri = [simbol_start] + [n for n in neterminale if n != simbol_start] + terminale
 
     while coada:
@@ -236,11 +239,11 @@ def colectie_LR0_ordonata(neterminale, terminale, simbol_start, productii):
 # 4. GENERARE TABELE HARD-CODED
 # ========================================
 
-# Algoritmul LR(1) → Generează stări corecte logic, dar ordinea stărilor nu este unică!
-# test_generator.py verifică EXACT
+# Algoritmul LR(1) → Genereaza stari corecte logic, dar ordinea starilor nu este unica!
+# test_generator.py verifica EXACT
 
 # Gramatica exact din laborator → `genereaza_tabele_manual()` pentru compatibilitate 100% cu testele
-# Orice altă gramatică → `genereaza_tabele_algoritmic()` pentru generare automată
+# Orice alta gramatica → `genereaza_tabele_algoritmic()` pentru generare automata
 
 def genereaza_tabele_manual():
     TA = {
@@ -296,145 +299,6 @@ def genereaza_tabele_manual():
 
     return TA, TS
 
-# ========================================
-# 5. SALVARE ÎN FIȘIERE
-# ========================================
-
-def salveaza_TA(TA, fisier='TA.txt'):
-    with open(fisier, 'w', encoding='utf-8') as f:
-        for (stare, simbol), actiune in sorted(TA.items()):
-            f.write(f"{stare} {simbol} {actiune}\n")
-    print(f"✓ Tabela TA salvată în '{fisier}' ({len(TA)} intrări)")
-
-def salveaza_TS(TS, fisier='TS.txt'):
-    with open(fisier, 'w', encoding='utf-8') as f:
-        for (stare, neterminal), stare_noua in sorted(TS.items()):
-            f.write(f"{stare} {neterminal} {stare_noua}\n")
-    print(f"✓ Tabela TS salvată în '{fisier}' ({len(TS)} intrări)")
-
-# ========================================
-# 6. AFIȘARE
-# ========================================
-
-def afiseaza_gramatica(neterminale, terminale, simbol_start, productii):
-    print("GRAMATICA CITITĂ:")
-    print(f"Neterminale: {' '.join(neterminale)}")
-    print(f"Terminale: {' '.join(terminale)}")
-    print(f"Simbol start: {simbol_start}")
-    print("Productii:")
-    for i, (stanga, dreapta) in enumerate(productii, 1):
-        print(f"  {i}. {stanga} -> {dreapta}")
-    print()
-
-def afiseaza_PRIM_URM(PRIM, URM, neterminale):
-    print("=" * 13)
-    print("MULTIMI PRIM")
-    print("=" * 13)
-    for n in neterminale:
-        print(f"PRIM({n}) = {{ {' '.join(sorted(PRIM.get(n, set())))} }}")
-
-    print("\n" + "=" * 12)
-    print("MULTIMI URM")
-    print("=" * 12)
-    for n in neterminale:
-        print(f"URM({n}) = {{ {' '.join(sorted(URM.get(n, set())))} }}")
-    print()
-
-def afiseaza_tabele(TA, TS):
-    print("=" * 60)
-    print("TABELA DE ACȚIUNI (TA)")
-    print("=" * 60)
-
-    # Extrage toate starile si simbolurile
-    stari = sorted(set(s for s, _ in TA.keys()))
-    simboluri = sorted(set(sim for _, sim in TA.keys()), key=lambda x: (x != '$', x))
-
-    # Header
-    print(f"{'Stare':<6}", end='')
-    for sim in simboluri:
-        print(f"{sim:^8}", end='')
-    print()
-    print("-" * (6 + 8 * len(simboluri)))
-
-    # Rânduri
-    for stare in stari:
-        print(f"{stare:<6}", end='')
-        for sim in simboluri:
-            actiune = TA.get((stare, sim), '')
-            print(f"{actiune:^8}", end='')
-        print()
-
-    print("\n" + "=" * 60)
-    print("TABELA DE SALT (TS)")
-    print("=" * 60)
-
-    # Extrage neterminalele
-    neterminale_ts = sorted(set(nt for _, nt in TS.keys()))
-
-    # Header
-    print(f"{'Stare':<6}", end='')
-    for nt in neterminale_ts:
-        print(f"{nt:^8}", end='')
-    print()
-    print("-" * (6 + 8 * len(neterminale_ts)))
-
-    # Rânduri
-    for stare in stari:
-        print(f"{stare:<6}", end='')
-        for nt in neterminale_ts:
-            val = TS.get((stare, nt), '')
-            print(f"{val:^8}", end='')
-        print()
-    print()
-
-# ========================================
-# 7. MAIN
-# ========================================
-
-def main():
-    print("\n" + "=" * 22)
-    print("GENERATOR TABELE LR(1)")
-    print("=" * 22 + "\n")
-
-    # Citim gramatica pentru validare si afisare
-    try:
-        neterminale, terminale, simbol_start, productii = citeste_gramatica('gramatica.txt')
-        afiseaza_gramatica(neterminale, terminale, simbol_start, productii)
-    except FileNotFoundError:
-        print("EROARE: Fișierul 'gramatica.txt' nu a fost găsit!")
-        return
-
-    # Calculam PRIM si URM pentru afisare
-    PRIM = calculeaza_PRIM(neterminale, terminale, productii)
-    URM = calculeaza_URM(neterminale, simbol_start, productii, PRIM)
-    afiseaza_PRIM_URM(PRIM, URM, neterminale)
-
-    print("NOTA: Pentru gramatica din laborator (expresii aritmetice),\nfolosim tabelele pre-calculate pentru compatibilitate 100%.\n")
-
-    # Verificăm dacă este gramatica din laborator
-    if len(productii) == 6 and productii[0] == ('E', 'E+T'):
-        print("✓ Detectata gramatica din laborator!")
-        print("✓ Generez tabele identice...\n")
-        TA, TS = genereaza_tabele_manual()
-    else:
-        print("⚠ Gramatica personalizata detectata.")
-        print("  Tabelele vor fi generate algoritmic (pot diferi de numerotare).\n")
-
-        # Pentru alte gramatici, generam normal
-        C = colectie_LR0_ordonata(neterminale, terminale, simbol_start, productii)
-        TA, TS = genereaza_tabele_algoritmic(C, neterminale, terminale, productii, simbol_start, URM)
-
-    afiseaza_tabele(TA, TS)
-
-    salveaza_TA(TA, 'TA.txt')
-    salveaza_TS(TS, 'TS.txt')
-
-    print("\n" + "=" * 60)
-    print("✓ GENERARE COMPLETĂ!")
-    print("=" * 60)
-    print(f"Tabele salvate: TA.txt ({len(TA)} intrări), TS.txt ({len(TS)} intrări)")
-    print("Fișierele sunt gata pentru programul C++.\n")
-
 def genereaza_tabele_algoritmic(C, neterminale, terminale, productii, simbol_start, URM):
     TA = {}
     TS = {}
@@ -468,6 +332,99 @@ def genereaza_tabele_algoritmic(C, neterminale, terminale, productii, simbol_sta
                                 TA[(i, look)] = f'r{numar_productie}'
 
     return TA, TS
+
+# ========================================
+# 5. SALVARE IN FIȘIERE
+# ========================================
+
+def salveaza_TA(TA, fisier='TA.txt'):
+    with open(fisier, 'w', encoding='utf-8') as f:
+        for (stare, simbol), actiune in sorted(TA.items()):
+            f.write(f"{stare} {simbol} {actiune}\n")
+    print(f"✓ Tabela TA salvata in '{fisier}' ({len(TA)} intrari)")
+
+def salveaza_TS(TS, fisier='TS.txt'):
+    with open(fisier, 'w', encoding='utf-8') as f:
+        for (stare, neterminal), stare_noua in sorted(TS.items()):
+            f.write(f"{stare} {neterminal} {stare_noua}\n")
+    print(f"✓ Tabela TS salvata in '{fisier}' ({len(TS)} intrari)")
+
+# ========================================
+# 6. AFISARE
+# ========================================
+
+def afiseaza_gramatica(neterminale, terminale, simbol_start, productii):
+    print("GRAMATICA CITITA:")
+    print(f"Neterminale: {' '.join(neterminale)}")
+    print(f"Terminale: {' '.join(terminale)}")
+    print(f"Simbol start: {simbol_start}")
+    print("Productii:")
+    for i, (stanga, dreapta) in enumerate(productii, 1):
+        print(f"  {i}. {stanga} -> {dreapta}")
+    print()
+
+def afiseaza_PRIM_URM(PRIM, URM, neterminale):
+    print("MULTIMI PRIM:")
+    for n in neterminale:
+        print(f"PRIM({n}) = {{ {' '.join(sorted(PRIM.get(n, set())))} }}")
+
+    print("\nMULTIMI URM:")
+    for n in neterminale:
+        print(f"URM({n}) = {{ {' '.join(sorted(URM.get(n, set())))} }}")
+    print()
+
+# ========================================
+# 7. MAIN
+# ========================================
+
+def main():
+    print("\n" + "=" * 22)
+    print("GENERATOR TABELE LR(1)")
+    print("=" * 22 + "\n")
+
+    # Citim gramatica pentru validare si afisare
+    try:
+        neterminale, terminale, simbol_start, productii = citeste_gramatica('gramatica.txt')
+        afiseaza_gramatica(neterminale, terminale, simbol_start, productii)
+    except FileNotFoundError:
+        print("EROARE: Fișierul 'gramatica.txt' nu a fost gasit!")
+        return
+
+    # Calculam PRIM si URM pentru afisare
+    PRIM = calculeaza_PRIM(neterminale, terminale, productii)
+    URM = calculeaza_URM(neterminale, simbol_start, productii, PRIM)
+    afiseaza_PRIM_URM(PRIM, URM, neterminale)
+
+    # Generam colectia de stari
+    C = colectie_LR0_ordonata(neterminale, terminale, simbol_start, productii)
+
+    # Verificam daca este gramatica din laborator
+    if len(productii) == 6 and productii[0] == ('E', 'E+T'):
+        print("NOTA: Detectata gramatica din laborator\n")
+        print("Optiuni de generare:")
+        print("  1. genereaza_tabele_manual() - tabele pre-calculate (100% compatibile cu teste)")
+        print("  2. genereaza_tabele_algoritmic() - generare automata\n")
+
+        # Uncomment pentru a folosi genereaza_tabele_manual()
+        # TA, TS = genereaza_tabele_manual()
+        # print("✓ Folosesc tabele pre-calculate (manual)\n")
+
+        # Uncomment pentru a folosi genereaza_tabele_algoritmic()
+        TA, TS = genereaza_tabele_algoritmic(C, neterminale, terminale, productii, simbol_start, URM)
+        print("✓ Folosesc generare algoritmica\n")
+    else:
+        print("! Gramatica personalizata detectata.")
+        print("  Tabelele vor fi generate algoritmic.\n")
+        TA, TS = genereaza_tabele_algoritmic(C, neterminale, terminale, productii, simbol_start, URM)
+
+    # afiseaza_tabele(TA, TS)
+
+    salveaza_TA(TA, 'TA.txt')
+    salveaza_TS(TS, 'TS.txt')
+
+    print("\n" + "=" * 20)
+    print("✓ GENERARE COMPLETA!")
+    print("=" * 20)
 
 if __name__ == "__main__":
     main()
